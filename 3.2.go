@@ -36,6 +36,7 @@ func main() {
 
 	lo, hi := 0, len(vals)
 	// Start out chasing "most"
+	// TODO: make this generic rather than copy-paste!
 	char_index := 0
 	for hi-lo > 1 {
 		fmt.Println("lo", lo, "hi", hi)
