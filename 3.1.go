@@ -20,16 +20,16 @@ func main() {
 		}
 	}
 
-  var gamma, epsilon int
+	var gamma, epsilon int
 	for _, digit := range a {
-    gamma <<= 1
-    epsilon <<= 1
-    if digit > 0 {
-      gamma |= 1
-    } else {
-      epsilon |= 1
-    }
-  }
+		gamma <<= 1
+		epsilon <<= 1
+		if digit > 0 {
+			gamma |= 1
+		} else {
+			epsilon |= 1
+		}
+	}
 
 	fmt.Println(a)
 	fmt.Println(gamma, epsilon)
