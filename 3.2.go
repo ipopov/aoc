@@ -23,20 +23,11 @@ func search(arr func(int) int, lo, hi int) int {
 	}
 }
 
-func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	var vals []string
-	for scanner.Scan() {
-		vals = append(vals, scanner.Text())
-	}
-
-	sort.Strings(vals)
-
+func bisect(vals []string, target rune) int64 {
 	var idx int
 
 	lo, hi := 0, len(vals)
-	// Start out chasing "most"
-	// TODO: make this generic rather than copy-paste!
+
 	char_index := 0
 	for hi-lo > 1 {
 		fmt.Println("lo", lo, "hi", hi)
@@ -46,7 +37,7 @@ func main() {
 			return int(vals[x][char_index] - byte('0'))
 		}, lo, hi)
 		fmt.Println("idx", idx)
-		if more_common == '0' {
+		if more_common == target {
 			hi = idx
 		} else {
 			lo = idx
@@ -55,29 +46,21 @@ func main() {
 	}
 	fmt.Println("lo", lo, "hi", hi)
 
-	oxy, _ := strconv.ParseInt(vals[lo], 2, 64)
+	ret, _ := strconv.ParseInt(vals[lo], 2, 64)
+	return ret
+}
 
-	lo, hi = 0, len(vals)
-	// Start out chasing "least"
-	char_index = 0
-	for hi-lo > 1 {
-		fmt.Println("lo", lo, "hi", hi)
-		more_common := rune(vals[(lo+hi)/2][char_index])
-		fmt.Printf("more_common %c\n", more_common)
-		idx = search(func(x int) int {
-			return int(vals[x][char_index] - byte('0'))
-		}, lo, hi)
-		fmt.Println("idx", idx)
-		if more_common == '0' {
-			lo = idx
-		} else {
-			hi = idx
-		}
-		char_index += 1
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	var vals []string
+	for scanner.Scan() {
+		vals = append(vals, scanner.Text())
 	}
-	fmt.Println("lo", lo, "hi", hi)
 
-	co2, _ := strconv.ParseInt(vals[lo], 2, 64)
+	sort.Strings(vals)
+
+	oxy := bisect(vals, '1')
+	co2 := bisect(vals, '0')
 
 	fmt.Println(oxy * co2)
 }
