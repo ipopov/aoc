@@ -74,9 +74,9 @@ func main() {
 		for _, card := range cs {
 			if f(card, nums[0:i]) {
 				fmt.Println(nums[i-1] * score(card, nums[0:i]))
+				return
 			}
 		}
 	}
 
-	return
 }
