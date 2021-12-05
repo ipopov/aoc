@@ -28,14 +28,21 @@ func main() {
 	for scanner.Scan() {
 		var x, y, u, v int
 		fmt.Sscanf(scanner.Text(), "%d,%d -> %d,%d", &x, &y, &u, &v)
-		if x != u && y != v {
-			continue
-		}
-		for i := min(x, u); i <= max(x, u); i++ {
-			for j := min(y, v); j <= max(y, v); j++ {
-				s[i][j] += 1
+		i, j := x, y
+		for i != u || j != v {
+			s[i][j] += 1
+			if i < u {
+				i++
+			} else if i > u {
+				i--
+			}
+			if j < v {
+				j++
+			} else if j > v {
+				j--
 			}
 		}
+		s[i][j] += 1
 	}
 	var count int
 	for i := 0; i < kX; i++ {
