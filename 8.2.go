@@ -51,12 +51,12 @@ func main() {
 		"abcdfg":  9,
 	}
 
+  perms := generate_perms("abcdefg")
 	var x int
 	for scanner.Scan() {
 		s := strings.Split(scanner.Text(), " | ")
 		left := strings.Split(s[0], " ")
 		right := strings.Split(s[1], " ")
-		perms := generate_perms("abcdefg")
 	BTarget:
 		for _, p := range perms {
 			for _, l := range left {
