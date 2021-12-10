@@ -15,7 +15,7 @@ func main() {
 		right := strings.Split(s[1], " ")
 		for _, q := range right {
 			l := len(q)
-			if l == 2 || l == 3 || l == 4|| l == 7  {
+			if l == 2 || l == 3 || l == 4 || l == 7 {
 				x++
 			}
 		}

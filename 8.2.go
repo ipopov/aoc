@@ -26,12 +26,12 @@ func generate_perms(alphabet string) []perm {
 }
 
 func (p *perm) remap(initial string) string {
-  rs := []rune(initial)
-  mapping := []rune(p.x)
-  for i, x := range rs {
-    rs[i] = mapping[x - 'a']
-  }
-  sort.Slice(rs, func(i, j int) bool { return rs[i] < rs[j] })
+	rs := []rune(initial)
+	mapping := []rune(p.x)
+	for i, x := range rs {
+		rs[i] = mapping[x-'a']
+	}
+	sort.Slice(rs, func(i, j int) bool { return rs[i] < rs[j] })
 	return string(rs)
 }
 
@@ -56,24 +56,23 @@ func main() {
 		s := strings.Split(scanner.Text(), " | ")
 		left := strings.Split(s[0], " ")
 		right := strings.Split(s[1], " ")
-    perms := generate_perms("abcdefg")
-BTarget:
-    for _, p := range perms {
-      for _, l := range left {
-        rl := p.remap(l)
-        if _, ok := valid[rl]; !ok {
-          continue BTarget
-        }
-      }
-        var this_result int
-      for _, r := range right {
-        digit := valid[p.remap(r)]
-        this_result = this_result * 10 + digit
-      }
-      x += this_result
-    }
+		perms := generate_perms("abcdefg")
+	BTarget:
+		for _, p := range perms {
+			for _, l := range left {
+				rl := p.remap(l)
+				if _, ok := valid[rl]; !ok {
+					continue BTarget
+				}
+			}
+			var this_result int
+			for _, r := range right {
+				digit := valid[p.remap(r)]
+				this_result = this_result*10 + digit
+			}
+			x += this_result
+		}
 	}
-
 
 	fmt.Println(x)
 }
