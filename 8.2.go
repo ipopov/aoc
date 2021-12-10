@@ -51,7 +51,7 @@ func main() {
 		"abcdfg":  9,
 	}
 
-  perms := generate_perms("abcdefg")
+	perms := generate_perms("abcdefg")
 	var x int
 	for scanner.Scan() {
 		s := strings.Split(scanner.Text(), " | ")
