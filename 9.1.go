@@ -22,8 +22,8 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	board := [][]byte{}
 	for scanner.Scan() {
-    var xxx []byte
-    xxx = append(xxx, scanner.Bytes()...)
+		var xxx []byte
+		xxx = append(xxx, scanner.Bytes()...)
 		board = append(board, xxx)
 	}
 	li, lj := len(board), len(board[0])
@@ -35,7 +35,7 @@ func main() {
 			if lowest(board, i, j) {
 				r := 1 + int(board[i][j]-byte('0'))
 				risk += r
-			} 
+			}
 		}
 	}
 

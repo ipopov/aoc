@@ -22,22 +22,21 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	board := [][]byte{}
 	for scanner.Scan() {
-    var xxx []byte
-    xxx = append(xxx, scanner.Bytes()...)
+		var xxx []byte
+		xxx = append(xxx, scanner.Bytes()...)
 		board = append(board, xxx)
 	}
 	li, lj := len(board), len(board[0])
 
-	risk := 0
-
 	for i := 0; i < li; i++ {
 		for j := 0; j < lj; j++ {
-			if lowest(board, i, j) {
-				r := 1 + int(board[i][j]-byte('0'))
-				risk += r
-			} 
+			v := int(board[i][j] - '0')
+			if v == 9 {
+				fmt.Printf("9")
+			} else {
+				fmt.Printf("\033[48;5;232;38;5;%dm%c\033[0m", 234+v, '0'+v)
+			}
 		}
+		fmt.Println()
 	}
-
-	fmt.Println(risk)
 }
