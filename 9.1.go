@@ -34,13 +34,9 @@ func main() {
 		for j := 0; j < lj; j++ {
 			if lowest(board, i, j) {
 				r := 1 + int(board[i][j]-byte('0'))
-        fmt.Printf("%c", board[i][j]-byte('0')+byte('a'))
 				risk += r
-			} else {
-        fmt.Printf("%c", board[i][j])
-      }
+			} 
 		}
-    fmt.Print("\n")
 	}
 
 	fmt.Println(risk)
