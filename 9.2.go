@@ -1,8 +1,13 @@
 package main
 
 import "fmt"
+import "sort"
 import "os"
 import "bufio"
+
+type index struct {
+	x, y int
+}
 
 func lowest(b [][]byte, i, j int) bool {
 	li, lj := len(b), len(b[0])
@@ -18,6 +23,20 @@ func lowest(b [][]byte, i, j int) bool {
 	return true
 }
 
+func traverse(b [][]byte, i, j int, count *int) {
+	if i < 0 || i >= len(b) || j < 0 || j >= len(b[0]) {
+		return
+	}
+	if b[i][j] == '9' {
+		return
+	}
+	b[i][j] = '9'
+	*count += 1
+	for _, x := range []index{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} {
+		traverse(b, i+x.x, j+x.y, count)
+	}
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	board := [][]byte{}
@@ -28,15 +47,24 @@ func main() {
 	}
 	li, lj := len(board), len(board[0])
 
+	sinks := []index{}
 	for i := 0; i < li; i++ {
 		for j := 0; j < lj; j++ {
-			v := int(board[i][j] - '0')
-			if v == 9 {
-				fmt.Printf("9")
-			} else {
-				fmt.Printf("\033[48;5;232;38;5;%dm%c\033[0m", 234+v, '0'+v)
+			if lowest(board, i, j) {
+				sinks = append(sinks, index{i, j})
 			}
 		}
-		fmt.Println()
 	}
+	sizes := []int{}
+	for _, x := range sinks {
+		sizes = append(sizes, 0)
+		traverse(board, x.x, x.y, &sizes[len(sizes)-1])
+	}
+	sort.Ints(sizes)
+	result := 1
+	for x := len(sizes) - 3; x <= len(sizes)-1; x++ {
+		result *= sizes[x]
+	}
+	fmt.Println(sizes)
+	fmt.Println(result)
 }
