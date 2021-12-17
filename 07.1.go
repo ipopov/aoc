@@ -38,7 +38,7 @@ func main() {
 	m := median(nums)
 	var sum float32
 	for _, x := range nums {
-    sum += abs(m - x)
+		sum += abs(m - x)
 	}
 
 	fmt.Println(sum)

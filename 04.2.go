@@ -70,19 +70,19 @@ func main() {
 		cs = append(cs, card{x: x})
 	}
 
-  var done map[int]bool = map[int]bool {}
-  for i := 0; i < len(cs); i++ {
-    done[i] = true
-  }
+	var done map[int]bool = map[int]bool{}
+	for i := 0; i < len(cs); i++ {
+		done[i] = true
+	}
 	for i := 0; i < len(nums); i++ {
 		for j, card := range cs {
 			if f(card, nums[0:i]) {
-        delete(done, j)
+				delete(done, j)
 			}
-      if len(done) == 0 {
-        fmt.Println(nums[i-1] * score(card, nums[0:i]))
-        return
-      }
+			if len(done) == 0 {
+				fmt.Println(nums[i-1] * score(card, nums[0:i]))
+				return
+			}
 		}
 	}
 }

@@ -53,17 +53,17 @@ func main() {
 		input = append(input, []byte(scanner.Text()))
 	}
 	fault_sum := 0
-  nonzero:= []int{}
+	nonzero := []int{}
 	for _, in := range input {
 		i := 0
 		fault := 0
 		completion_score := 0
 		traverse(in, &i, &fault, &completion_score)
 		fault_sum += fault
-if completion_score != 0 {
-nonzero = append(nonzero, completion_score)
-}
+		if completion_score != 0 {
+			nonzero = append(nonzero, completion_score)
+		}
 	}
-sort.Ints(nonzero)
-fmt.Println(nonzero[len(nonzero)/2])
+	sort.Ints(nonzero)
+	fmt.Println(nonzero[len(nonzero)/2])
 }

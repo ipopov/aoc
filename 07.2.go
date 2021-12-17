@@ -28,7 +28,7 @@ func main() {
 	min, max := nums[0], nums[len(nums)-1]
 
 	var min_cost float64 = -1
-  // Go over all possible midpoints
+	// Go over all possible midpoints
 	for i := min; i <= max; i++ {
 		var cost float64
 		for _, n := range nums {
