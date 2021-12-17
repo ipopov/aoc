@@ -13,7 +13,7 @@ func print_board(in [][]int) {
 	}
 }
 
-func update(b [][]int, f func(x, y int, v *int)) {
+func update[T any](b [][]T, f func(x, y int, v *T)) {
 	for i, x := range b {
 		for j, _ := range x {
 			f(i, j, &b[i][j])
