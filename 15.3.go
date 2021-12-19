@@ -2,48 +2,45 @@ package main
 
 import (
 	"bufio"
-	//"container/heap"
+	"container/heap"
 	"fmt"
 	"os"
 )
-
-////}	inf  bool
-////}	dist int
-////}}
-//
-//type PQ []point
-//
-//func (h PQ) Len() int {
-//	return len(h)
-//}
-//func (h PQ) Less(i, j int) bool {
-//  if h[i].inf != h[j].inf {
-//    return h[i].inf < h[j].inf
-//  }
-//	return h[i].dist < h[j].dist
-//}
-//func (h PQ) Swap(i, j int) {
-//	h[i], h[j] = h[j], h[i]
-//}
-//
-//func (h *PQ) Push(x interface{}) {
-//	*h = append(*h, x.(traversal))
-//}
-//
-//func (h *PQ) Pop() interface{} {
-//	old := *h
-//	n := len(old)
-//	x := old[n-1]
-//	*h = old[0 : n-1]
-//	return x
-//}
-
-type board [][]int
 
 type point struct {
 	x, y int
 }
 
+type pq_entry struct {
+  p point
+  c int
+}
+
+type PQ []pq_entry
+
+func (h PQ) Len() int {
+	return len(h)
+}
+func (h PQ) Less(i, j int) bool {
+	return h[i].c < h[j].c
+}
+func (h PQ) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+
+func (h *PQ) Push(x any) {
+	*h = append(*h, x.(pq_entry))
+}
+
+func (h *PQ) Pop() any {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+type board [][]int
 
 type Done struct {
   m map[point]int
@@ -59,34 +56,29 @@ func (d *Done)Put(p point, c int) {
 }
 
 type Heap struct {
-  m map[point]int  // to cost
+  q PQ
+}
+
+func (h *Heap)Init() {
+  h.q = PQ{}
+  heap.Init(&h.q)
 }
 
 func (h Heap)Empty() bool {
-  return len(h.m) == 0
+  return len(h.q) == 0
 }
 
 func (h *Heap)Update(p point, c int) {
-  it, ok := h.m[p]
-  if !ok || c < it {
-    h.m[p] = c
-  }
+  // Just push (duplicates are ok)
+  heap.Push(&h.q, pq_entry{
+    p: p,
+    c: c,
+  })
 }
 
 func (h *Heap)PopMin() (point, int) {
-  // Yes... this should be a heap. But it's a pain in Go.
-  p := point{}
-  c := -1
-  for k, v := range h.m {
-    if c == -1 || v < c {
-      p = k
-      c = v
-    }
-  }
-  delete(h.m, p)
-  //fmt.Println(len(h.m))
-  //fmt.Println(p, c)
-  return p, c
+  pqe := heap.Pop(&h.q).(pq_entry)
+  return pqe.p, pqe.c
 }
 
 func neighbors(i, j, dim_i, dim_j int) []point {
@@ -105,12 +97,14 @@ func dijkstra(b board) {
   d := Done{
     m: map[point]int{},
   }
-  h := Heap{
-    m: map[point]int{},
-  }
+  h := Heap{}
+  h.Init()
   h.Update(point{0, 0}, 0)
   for !h.Empty() {
     n, c := h.PopMin()
+    if (d.Contains(n)) {
+      continue
+    }
     d.Put(n, c)
     for _, neighbor := range neighbors(n.x, n.y, len(b), len(b[0])) {
       if d.Contains(neighbor) {
