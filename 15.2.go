@@ -44,49 +44,48 @@ type point struct {
 	x, y int
 }
 
-
 type Done struct {
-  m map[point]int
+	m map[point]int
 }
 
-func (d Done)Contains(p point) bool {
-  _, ok := d.m[p]
-  return ok
+func (d Done) Contains(p point) bool {
+	_, ok := d.m[p]
+	return ok
 }
 
-func (d *Done)Put(p point, c int) {
-  d.m[p] = c
+func (d *Done) Put(p point, c int) {
+	d.m[p] = c
 }
 
 type Heap struct {
-  m map[point]int  // to cost
+	m map[point]int // to cost
 }
 
-func (h Heap)Empty() bool {
-  return len(h.m) == 0
+func (h Heap) Empty() bool {
+	return len(h.m) == 0
 }
 
-func (h *Heap)Update(p point, c int) {
-  it, ok := h.m[p]
-  if !ok || c < it {
-    h.m[p] = c
-  }
+func (h *Heap) Update(p point, c int) {
+	it, ok := h.m[p]
+	if !ok || c < it {
+		h.m[p] = c
+	}
 }
 
-func (h *Heap)PopMin() (point, int) {
-  // Yes... this should be a heap. But it's a pain in Go.
-  p := point{}
-  c := -1
-  for k, v := range h.m {
-    if c == -1 || v < c {
-      p = k
-      c = v
-    }
-  }
-  delete(h.m, p)
-  //fmt.Println(len(h.m))
-  //fmt.Println(p, c)
-  return p, c
+func (h *Heap) PopMin() (point, int) {
+	// Yes... this should be a heap. But it's a pain in Go.
+	p := point{}
+	c := -1
+	for k, v := range h.m {
+		if c == -1 || v < c {
+			p = k
+			c = v
+		}
+	}
+	delete(h.m, p)
+	//fmt.Println(len(h.m))
+	//fmt.Println(p, c)
+	return p, c
 }
 
 func neighbors(i, j, dim_i, dim_j int) []point {
@@ -97,30 +96,30 @@ func neighbors(i, j, dim_i, dim_j int) []point {
 			continue
 		}
 		ret = append(ret, point{ii, jj})
-  }
-  return ret
+	}
+	return ret
 }
 
 func dijkstra(b board) {
-  d := Done{
-    m: map[point]int{},
-  }
-  h := Heap{
-    m: map[point]int{},
-  }
-  h.Update(point{0, 0}, 0)
-  for !h.Empty() {
-    n, c := h.PopMin()
-    d.Put(n, c)
-    for _, neighbor := range neighbors(n.x, n.y, len(b), len(b[0])) {
-      if d.Contains(neighbor) {
-        continue
-      }
-      h.Update(neighbor, c + b[neighbor.x][neighbor.y])
-    }
-  }
-  //fmt.Println(d)
-  fmt.Println(d.m[point{len(b)-1, len(b[0])-1}])
+	d := Done{
+		m: map[point]int{},
+	}
+	h := Heap{
+		m: map[point]int{},
+	}
+	h.Update(point{0, 0}, 0)
+	for !h.Empty() {
+		n, c := h.PopMin()
+		d.Put(n, c)
+		for _, neighbor := range neighbors(n.x, n.y, len(b), len(b[0])) {
+			if d.Contains(neighbor) {
+				continue
+			}
+			h.Update(neighbor, c+b[neighbor.x][neighbor.y])
+		}
+	}
+	//fmt.Println(d)
+	fmt.Println(d.m[point{len(b) - 1, len(b[0]) - 1}])
 }
 
 func main() {
@@ -136,14 +135,14 @@ func main() {
 	full_b := board{}
 	li, lj := len(b), len(b[0])
 
-	for i := 0; i < 5 * li; i++ {
-    full_b = append(full_b, make([]int, 5*lj))
-		for j := 0; j < 5 * lj; j++ {
-      x_off, y_off := i / li, j / lj
-      x_idx, y_idx := i % li, j % lj
-      full_b[i][j] = (x_off + y_off + b[x_idx][y_idx]-1) % 9 + 1
-    }
-  }
+	for i := 0; i < 5*li; i++ {
+		full_b = append(full_b, make([]int, 5*lj))
+		for j := 0; j < 5*lj; j++ {
+			x_off, y_off := i/li, j/lj
+			x_idx, y_idx := i%li, j%lj
+			full_b[i][j] = (x_off+y_off+b[x_idx][y_idx]-1)%9 + 1
+		}
+	}
 
-  dijkstra(full_b)
+	dijkstra(full_b)
 }
