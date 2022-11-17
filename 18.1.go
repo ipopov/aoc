@@ -159,11 +159,11 @@ func main() {
   depth: 0,
   }
 
-	//for x := descend_left(root_iterator); x != nil; x = right(x) {
-	//	if maybeSplit(x) {
-  //    break
-  //  }
-	//}
+	for x := descend_left(root_iterator); x.n != nil; x = right(x) {
+		if maybeSplit(x.n) {
+      break
+    }
+	}
 	for x := descend_left(root_iterator); x.n != nil; x = right(x) {
 		fmt.Printf("%d: %d\n", x.depth, x.n.value)
 	}
