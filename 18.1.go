@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+import "math"
 import "os"
 import "bufio"
 
@@ -33,6 +34,14 @@ func make_leaf(v int) *node {
 	}
 }
 
+
+func descend_right(i iterator) iterator {
+	for ; !i.n.isLeaf; {
+    i.n = i.n.right
+    i.depth++
+	}
+  return i
+}
 func descend_left(i iterator) iterator {
 	for ; !i.n.isLeaf; {
     i.n = i.n.left 
@@ -41,23 +50,26 @@ func descend_left(i iterator) iterator {
   return i
 }
 
-//func left(n *node) *node {
-//	p := n.parent
-//	if p == nil {
-//		return nil
-//	}
-//	for n == p.left {
-//		p, n = p.parent, p
-//		if p == nil {
-//			return nil
-//		}
-//	}
-//	q := p.left
-//	for ; !q.isLeaf; q = q.right {
-//	}
-//	return q
-//}
-//
+func left(i iterator) iterator {
+	p := i.n.parent
+	if p == nil {
+		return iterator{
+      n: nil,
+    }
+	}
+	for i.n == p.left {
+		p, i.n = p.parent, p
+    i.depth--
+		if p == nil {
+      return iterator{
+        n: nil,
+      }
+		}
+	}
+  i.n = p.left
+  return descend_right(i)
+}
+
 func right(i iterator) iterator {
 	p := i.n.parent
 	if p == nil {
@@ -139,8 +151,8 @@ func maybeSplit(n *node) bool {
   if (n.value < 10) {
     return false
   }
-  l:= make_leaf(n.value / 2)
-  r:= make_leaf(n.value / 2)
+  l:= make_leaf(int(math.Floor(float64(n.value) / 2))      )
+  r:= make_leaf(int(math.Ceil(float64(n.value) / 2)))
   l.parent = n
   r.parent = n
   n.isLeaf= false
@@ -150,28 +162,91 @@ func maybeSplit(n *node) bool {
   return true
 }
 
-func main() {
-	tokens := tokenize([]byte("[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]"))
-	fmt.Printf("%u\n", tokens)
-	n := parse(&tokens)
-  root_iterator := iterator {
-  n: n,
-  depth: 0,
+func maybeExplode(i iterator) bool {
+  if i.depth < 5 {
+    return false
   }
+  
+  parent_it := iterator {
+    n: i.n.parent,
+    depth: i.depth -1,
+  }
+  left_neighbor := left(iterator {
+    n: parent_it.n.left,
+    depth: i.depth,
+    })
+  right_neighbor := right(iterator {
+    n: parent_it.n.right,
+    depth: i.depth,
+    })
+  if x := left_neighbor.n; x != nil {
+    x.value += parent_it.n.left.value
+  }
+  if x := right_neighbor.n; x != nil {
+    x.value += parent_it.n.right.value
+  }
+  parent_it.n.isLeaf = true
+  parent_it.n.value = 0
+  parent_it.n.left = nil
+  parent_it.n.right = nil
+  
+  return true
+}
 
-	for x := descend_left(root_iterator); x.n != nil; x = right(x) {
-		if maybeSplit(x.n) {
-      break
+func magnitude(n *node) int {
+  if n.isLeaf {
+    return n.value
+  }
+  return 3 * magnitude(n.left) + 2*magnitude(n.right)
+}
+
+func parseString(s []byte) *node {
+	tokens := tokenize(s)
+	n := parse(&tokens)
+  return n
+}
+
+func (n *node) toString() string {
+  if n.isLeaf {
+    return fmt.Sprintf("%d", n.value)
+  }
+  return fmt.Sprintf("[%s,%s]", n.left.toString(), n.right.toString())
+}
+
+func add(x, y *node) *node {
+  ret := make_node(x, y)
+Outer:
+  for did_reduction:=true; did_reduction; {
+    //fmt.Printf("%s\n", ret.toString())
+    root_iterator := iterator {
+      n: ret,
+      depth: 0,
     }
-	}
-	for x := descend_left(root_iterator); x.n != nil; x = right(x) {
-		fmt.Printf("%d: %d\n", x.depth, x.n.value)
-	}
+    did_reduction = false
+    for x := descend_left(root_iterator); x.n != nil; x = right(x) {
+      if maybeExplode(x) {
+        did_reduction = true
+        continue Outer
+      }
+    }
+    for x := descend_left(root_iterator); x.n != nil; x = right(x) {
+      if maybeSplit(x.n) {
+        did_reduction = true
+        continue Outer
+      }
+    }
+  }
+  fmt.Printf("%s\n", ret.toString())
+  return ret
+}
 
-	fmt.Printf("%u\n", n)
+func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	var x, u, y, v int
-	fmt.Sscanf(scanner.Text(), "target area: x=%d..%d, y=%d..%d", &x, &u, &y, &v)
-	fmt.Println(x, u, y, v)
+  n := parseString([]byte(scanner.Text()))
+	for scanner.Scan(){
+    x := parseString([]byte(scanner.Text()))
+    n = add(n, x)
+  }
+  fmt.Printf("%d\n", magnitude(n))
 }
