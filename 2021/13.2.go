@@ -1,9 +1,10 @@
 package main
 
 import "fmt"
-import "constraints"
 import "os"
 import "bufio"
+
+import "aoc/util"
 
 type point struct {
 	x, y int
@@ -12,22 +13,6 @@ type point struct {
 type fold struct {
 	axis  byte
 	value int
-}
-
-func max[T constraints.Ordered](x, y T) T {
-	if x >= y {
-		return x
-	} else {
-		return y
-	}
-}
-
-func abs[T constraints.Signed](x T) T {
-	if x >= 0 {
-		return x
-	} else {
-		return -x
-	}
 }
 
 func f(ps []point, fs []fold) map[point]bool {
@@ -44,7 +29,7 @@ func f(ps []point, fs []fold) map[point]bool {
 			} else {
 				z = &p.y
 			}
-			*z = f.value - abs(f.value-*z)
+			*z = f.value - util.Abs(f.value-*z)
 			m_new[p] = true
 		}
 		m = m_new
@@ -55,8 +40,8 @@ func f(ps []point, fs []fold) map[point]bool {
 func p(m map[point]bool) {
 	x_size, y_size := 0, 0
 	for p, _ := range m {
-		x_size = max(x_size, p.x)
-		y_size = max(y_size, p.y)
+		x_size = util.Max(x_size, p.x)
+		y_size = util.Max(y_size, p.y)
 	}
 	for y := 0; y < y_size+1; y++ {
 		for x := 0; x < x_size+1; x++ {
