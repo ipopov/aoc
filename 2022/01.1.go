@@ -36,14 +36,6 @@ func parse(r io.Reader) *Input {
 	return x
 }
 
-func sum(i []int) int {
-	var ret int
-	for _, x := range i {
-		ret += x
-	}
-	return ret
-}
-
 func main() {
 	in := parse(os.Stdin)
 	var totals sort.IntSlice
@@ -55,6 +47,6 @@ func main() {
 		totals = append(totals, total)
 	}
 	sort.Sort(sort.Reverse(totals))
-	fmt.Printf("%d\n", sum(totals[0:1]))
-	fmt.Printf("%d\n", sum(totals[0:3]))
+	fmt.Printf("%d\n", util.Sum(totals[0:1]))
+	fmt.Printf("%d\n", util.Sum(totals[0:3]))
 }
