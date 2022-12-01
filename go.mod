@@ -1,6 +1,6 @@
 module aoc
 
-go 1.15
+go 1.18
 
 require (
 	github.com/alecthomas/participle v0.7.1
