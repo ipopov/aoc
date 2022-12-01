@@ -9,6 +9,13 @@ import "io"
 import p "github.com/alecthomas/participle/v2"
 import l "github.com/alecthomas/participle/v2/lexer"
 
+func OrDie[T any](t T, err error) T {
+  if err != nil {
+    panic(err)
+  }
+  return t
+}
+
 type Item struct {
 	Calories int `@Int Newline?`
 }
@@ -30,8 +37,8 @@ func parse(r io.Reader) *Input {
 
 	parser := p.MustBuild[Input](p.Lexer(lexer))
 
-	in, _ := io.ReadAll(os.Stdin)
-	x, _ := parser.ParseBytes("", in)
+	in := OrDie(io.ReadAll(os.Stdin))
+	x := OrDie(parser.ParseBytes("", in))
 	return x
 }
 
