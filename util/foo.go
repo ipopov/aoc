@@ -9,8 +9,8 @@ func OrDie[T any](t T, err error) T {
   return t
 }
 
-func Sum(i []int) int {
-	var ret int
+func Sum[T constraints.Integer](i []T) T {
+	var ret T
 	for _, x := range i {
 		ret += x
 	}
