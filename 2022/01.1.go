@@ -36,24 +36,24 @@ func parse(r io.Reader) *Input {
 }
 
 func sum(i []int) int {
-  var ret int
-  for _, x := range i {
-    ret += x
-  }
-  return ret
+	var ret int
+	for _, x := range i {
+		ret += x
+	}
+	return ret
 }
 
 func main() {
 	in := parse(os.Stdin)
-  var totals sort.IntSlice
-  for _, elf := range in.E {
-    total := 0
-    for _, item := range elf.I {
-      total += item.Calories
-    }
-    totals = append(totals, total)
-  }
-  sort.Sort(sort.Reverse(totals))
-  fmt.Printf("%d\n", sum(totals[0:1]))
-  fmt.Printf("%d\n", sum(totals[0:3]) )
+	var totals sort.IntSlice
+	for _, elf := range in.E {
+		total := 0
+		for _, item := range elf.I {
+			total += item.Calories
+		}
+		totals = append(totals, total)
+	}
+	sort.Sort(sort.Reverse(totals))
+	fmt.Printf("%d\n", sum(totals[0:1]))
+	fmt.Printf("%d\n", sum(totals[0:3]))
 }
