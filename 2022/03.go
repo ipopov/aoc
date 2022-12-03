@@ -5,7 +5,6 @@ import "aoc/util"
 import "golang.org/x/exp/slices"
 
 import "os"
-import "bufio"
 import "bytes"
 import "io"
 
@@ -33,12 +32,11 @@ func score(b byte) int {
 }
 
 func part1(in io.Reader) {
-	s := bufio.NewScanner(in)
-	sum := 0
-	for s.Scan() {
-		sum += score(common(s.Bytes()))
-	}
-	fmt.Printf("%d\n", sum)
+	fmt.Printf("%d\n",
+		util.Sum(
+			util.Map(
+				func(x []byte) int { return score(common(x)) },
+				util.AsLines(in))))
 }
 
 func part2(in io.Reader) {
