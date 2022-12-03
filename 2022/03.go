@@ -18,8 +18,7 @@ func common(x []byte) byte {
 	l := len(x)
 	util.Check(l%2 == 0)
 	mid := l / 2
-	a, b := toSet(x[:mid]), toSet(x[mid:])
-	i := util.SetIntersect(a, b)
+	i := util.SetIntersect(toSet(x[:mid]), toSet(x[mid:]))
 	util.Check(len(i) == 1)
 	return i[0]
 }
