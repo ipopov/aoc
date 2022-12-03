@@ -78,3 +78,11 @@ func AsLines(r io.Reader) [][]byte {
   }
   return ret
 }
+
+func Map[T, U any](f func(T)U, x []T) []U {
+  var ret []U
+  for _, i := range x {
+    ret = append(ret, f(i))
+  }
+  return ret
+}

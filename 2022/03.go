@@ -42,23 +42,14 @@ func part1(in io.Reader) {
   fmt.Printf("%d\n", sum)
 }
 
-func m[T, U any](f func(T)U, x []T) []U {
-  var ret []U
-  for _, i := range x {
-    ret = append(ret, f(i))
-  }
-  return ret
-}
-
 func part2(in io.Reader) {
   l := util.AsLines(in)
   util.Check(len(l) % 3 == 0)
   sum := 0
   for i:=0; i < len(l); i+=3 {
-    t := m(toSet, l[i:i+3])
-    intersection := util.SetIntersect(t...)
-    util.Check(len(intersection) == 1)
-    sum += score(intersection[0])
+    i := util.SetIntersect(util.Map(toSet, l[i:i+3])...)
+    util.Check(len(i) == 1)
+    sum += score(i[0])
   }
   fmt.Printf("%d\n", sum)
 }
