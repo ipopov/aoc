@@ -1,6 +1,9 @@
 package util
 
 import "golang.org/x/exp/constraints"
+import "golang.org/x/exp/slices"
+import "io"
+import "bufio"
 
 func Check(b bool) {
   if !b {
@@ -39,7 +42,7 @@ func Abs[T constraints.Signed](x T) T {
 	}
 }
 
-func SetIntersect[E constraints.Ordered](s1, s2 []E) []E {
+func setIntersect[E constraints.Ordered](s1, s2 []E) []E {
   var ret []E
   var i, j int
   for i < len(s1) && j < len(s2) {
@@ -54,6 +57,24 @@ func SetIntersect[E constraints.Ordered](s1, s2 []E) []E {
       continue
     }
     j++
+  }
+  return ret
+}
+
+func SetIntersect[E constraints.Ordered](xs ...[]E) []E {
+  switch len(xs) {
+    case 0:
+    return []E{}
+    case 1:
+    return xs[0]
+  }
+  return setIntersect(xs[0], SetIntersect(xs[1:]...))
+}
+
+func AsLines(r io.Reader) [][]byte {
+  var ret [][]byte
+  for s := bufio.NewScanner(r); s.Scan() ; {
+    ret = append(ret, slices.Clone(s.Bytes()))
   }
   return ret
 }

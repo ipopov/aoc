@@ -6,17 +6,19 @@ import "golang.org/x/exp/slices"
 
 import "os"
 import "bufio"
+import "bytes"
+import "io"
+
+func toSet(x []byte) []byte {
+  slices.Sort(x)
+  return slices.Compact(x)
+}
 
 func common(x []byte) byte {
   l := len(x)
   util.Check(l % 2 == 0)
   mid := l/2
-  a, b := x[:mid], x[mid:]
-  slices.Sort(a)
-  a = slices.Compact(a)
-  slices.Sort(b)
-  b = slices.Compact(b)
-
+  a, b := toSet(x[:mid]), toSet(x[mid:])
   i := util.SetIntersect(a, b)
   util.Check(len(i) == 1)
   return i[0]
@@ -31,11 +33,39 @@ func score(b byte) int {
   return 1 + int(b - 'a')
 }
 
-func main() {
-  s := bufio.NewScanner(os.Stdin)
+func part1(in io.Reader) {
+  s := bufio.NewScanner(in)
   sum := 0
   for s.Scan() {
     sum += score(common(s.Bytes()))
   }
   fmt.Printf("%d\n", sum)
+}
+
+func m[T, U any](f func(T)U, x []T) []U {
+  var ret []U
+  for _, i := range x {
+    ret = append(ret, f(i))
+  }
+  return ret
+}
+
+func part2(in io.Reader) {
+  l := util.AsLines(in)
+  util.Check(len(l) % 3 == 0)
+  sum := 0
+  for i:=0; i < len(l); i+=3 {
+    t := m(toSet, l[i:i+3])
+    intersection := util.SetIntersect(t...)
+    util.Check(len(intersection) == 1)
+    sum += score(intersection[0])
+  }
+  fmt.Printf("%d\n", sum)
+}
+
+
+func main() {
+  in := util.OrDie(io.ReadAll(os.Stdin))
+  part1(bytes.NewReader(in))
+  part2(bytes.NewReader(in))
 }
