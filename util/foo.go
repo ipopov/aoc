@@ -2,6 +2,12 @@ package util
 
 import "golang.org/x/exp/constraints"
 
+func Check(b bool) {
+  if !b {
+    panic("assertion failure")
+  }
+}
+
 func OrDie[T any](t T, err error) T {
   if err != nil {
     panic(err)
@@ -31,4 +37,23 @@ func Abs[T constraints.Signed](x T) T {
 	} else {
 		return -x
 	}
+}
+
+func SetIntersect[E constraints.Ordered](s1, s2 []E) []E {
+  var ret []E
+  var i, j int
+  for i < len(s1) && j < len(s2) {
+    if s1[i] < s2[j] {
+      i++
+      continue
+    }
+    if s1[i] == s2[j] {
+      ret = append(ret, s1[i])
+      i++
+      j++
+      continue
+    }
+    j++
+  }
+  return ret
 }
