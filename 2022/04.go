@@ -11,16 +11,16 @@ import l "github.com/alecthomas/participle/v2/lexer"
 
 type Range struct {
 	Start int `@Number Dash`
-	End     int `@Number`
+	End   int `@Number`
 }
 
 type RangePair struct {
-  A *Range  `@@ Comma`
-  B *Range  `@@ Newline`
+	A *Range `@@ Comma`
+	B *Range `@@ Newline`
 }
 
 type Input struct {
-  R []*RangePair `@@+`
+	R []*RangePair `@@+`
 }
 
 func parse(r io.Reader) *Input {
@@ -40,16 +40,16 @@ func parse(r io.Reader) *Input {
 }
 
 func (x Range) Covers(y Range) bool {
-  return y.Start >= x.Start && y.End <= x.End
+	return y.Start >= x.Start && y.End <= x.End
 }
 
 func main() {
 	in := parse(os.Stdin)
 	sum := util.Sum(util.Map(func(p *RangePair) int {
-    if p.A.Covers(*p.B) || p.B.Covers(*p.A) {
-      return 1;
-    }
-    return 0
-  }, in.R))
+		if p.A.Covers(*p.B) || p.B.Covers(*p.A) {
+			return 1
+		}
+		return 0
+	}, in.R))
 	fmt.Printf("%d\n", sum)
 }
