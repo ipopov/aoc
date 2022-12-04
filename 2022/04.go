@@ -54,10 +54,10 @@ func Overlap(x, y Range) bool {
 func main() {
 	in := parse(os.Stdin)
 	part1 := util.CountIf(func(p *RangePair) bool {
-    return p.A.Covers(*p.B) || p.B.Covers(*p.A)
+		return p.A.Covers(*p.B) || p.B.Covers(*p.A)
 	}, in.R)
 	part2 := util.CountIf(func(p *RangePair) bool {
-    return Overlap(*p.A, *p.B)
+		return Overlap(*p.A, *p.B)
 	}, in.R)
 	fmt.Printf("%d\n", part1)
 	fmt.Printf("%d\n", part2)
