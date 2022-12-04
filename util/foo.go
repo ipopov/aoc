@@ -84,3 +84,13 @@ func Map[T, U any](f func(T) U, x []T) []U {
 	}
 	return ret
 }
+
+func CountIf[T any](predicate func(T) bool, x []T) int {
+	return Sum(Map(func(x T) int {
+    if predicate(x) {
+      return 1
+    }
+    return 0
+	}, x))
+}
+

@@ -39,17 +39,26 @@ func parse(r io.Reader) *Input {
 	return x
 }
 
+func (x Range) Contains(point int) bool {
+	return point >= x.Start && point <= x.End
+}
+
 func (x Range) Covers(y Range) bool {
-	return y.Start >= x.Start && y.End <= x.End
+	return x.Contains(y.Start) && x.Contains(y.End)
+}
+
+func Overlap(x, y Range) bool {
+	return x.Contains(y.Start) || y.Contains(x.Start)
 }
 
 func main() {
 	in := parse(os.Stdin)
-	sum := util.Sum(util.Map(func(p *RangePair) int {
-		if p.A.Covers(*p.B) || p.B.Covers(*p.A) {
-			return 1
-		}
-		return 0
-	}, in.R))
-	fmt.Printf("%d\n", sum)
+	part1 := util.CountIf(func(p *RangePair) bool {
+    return p.A.Covers(*p.B) || p.B.Covers(*p.A)
+	}, in.R)
+	part2 := util.CountIf(func(p *RangePair) bool {
+    return Overlap(*p.A, *p.B)
+	}, in.R)
+	fmt.Printf("%d\n", part1)
+	fmt.Printf("%d\n", part2)
 }
