@@ -11,8 +11,12 @@ func Check(b bool) {
 	}
 }
 
-func OrDie[T any](t T, err error) T {
+func OkOrDie(err error) {
 	Check(err == nil)
+}
+
+func OrDie[T any](t T, err error) T {
+	OkOrDie(err)
 	return t
 }
 

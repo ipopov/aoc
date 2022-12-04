@@ -34,7 +34,7 @@ func parse(r io.Reader) *Input {
 
 	parser := p.MustBuild[Input](p.Lexer(lexer))
 
-	in := util.OrDie(io.ReadAll(os.Stdin))
+	in := util.OrDie(io.ReadAll(r))
 	x := util.OrDie(parser.ParseBytes("", in))
 	return x
 }
