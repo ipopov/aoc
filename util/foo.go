@@ -98,3 +98,14 @@ func CountIf[T any](predicate func(T) bool, x []T) int {
 	}, x))
 }
 
+type SetElement interface {
+	comparable
+	constraints.Ordered
+}
+
+func ToSet[T SetElement](x []T) []T {
+	x = slices.Clone(x)
+	slices.Sort(x)
+	return slices.Compact(x)
+}
+
